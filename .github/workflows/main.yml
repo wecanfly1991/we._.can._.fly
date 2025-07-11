@@ -1,0 +1,28 @@
+name: L0 YAML Auto Validator
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-yaml:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install yamllint
+        run: sudo apt-get update && sudo apt-get install yamllint -y
+
+      - name: Run YAML lint
+        run: yamllint ./l0/system/startup/optimized/v8.2/enhanced.qyaml
+
+      - name: Simulate Quantum Upload API
+        run: |
+          curl -X POST https://api.l0systems/upload \
+            -F "file=@l0/system/startup/optimized/v8.2/enhanced.qyaml" \
+            -H "Content-Type: application/yaml"
+
